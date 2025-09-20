@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>FriendSync Calendar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="hamburger-btn" id="hamburgerBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <h1>FriendSync</h1>
+        <button class="add-btn" id="quickAddBtn">+</button>
+    </header>
+
+    <!-- Friends Sidebar (Mobile Slide-out) -->
+    <div class="sidebar-overlay hidden" id="sidebarOverlay"></div>
+    <aside class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-header">
+            <h3>Friends</h3>
+            <button class="sidebar-close" id="closeSidebar">&times;</button>
+        </div>
+        <div class="friends-list" id="friendsList">
+            <!-- Friends will be dynamically added here -->
+        </div>
+        <button class="btn btn--primary btn--full-width" id="addFriendBtn">Add Friend</button>
+    </aside>
+
+    <!-- Main Content Container -->
+    <div class="main-container">
+        <!-- Calendar Tab -->
+        <div class="tab-content active" id="calendarTab">
+            <!-- Calendar Navigation -->
+            <div class="calendar-nav glass-card">
+                <button class="nav-btn" id="prevMonth">
+                    <span>‹</span>
+                </button>
+                <h2 id="currentMonth">September 2025</h2>
+                <button class="nav-btn" id="nextMonth">
+                    <span>›</span>
+                </button>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div class="calendar-container glass-card">
+                <div class="calendar-header">
+                    <div class="day-header">Sun</div>
+                    <div class="day-header">Mon</div>
+                    <div class="day-header">Tue</div>
+                    <div class="day-header">Wed</div>
+                    <div class="day-header">Thu</div>
+                    <div class="day-header">Fri</div>
+                    <div class="day-header">Sat</div>
+                </div>
+                <div class="calendar-body" id="calendarBody">
+                    <!-- Calendar dates will be dynamically generated -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Ideas Tab -->
+        <div class="tab-content" id="ideasTab">
+            <div class="ideas-header glass-card">
+                <div class="ideas-title">
+                    <h2>Group Ideas</h2>
+                    <p>Suggestions from friends</p>
+                </div>
+                <button class="btn btn--primary" id="addIdeaBtn">Add Idea</button>
+            </div>
+            
+            <div class="ideas-filters">
+                <div class="filter-chip active" data-filter="all">All</div>
+                <div class="filter-chip" data-filter="Movies">Movies</div>
+                <div class="filter-chip" data-filter="Restaurants">Food</div>
+                <div class="filter-chip" data-filter="Activities">Activities</div>
+            </div>
+
+            <div class="ideas-list" id="ideasList">
+                <!-- Ideas will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav glass-nav">
+        <button class="nav-item active" data-tab="calendar">
+            <div class="nav-icon">📅</div>
+            <span>Calendar</span>
+        </button>
+        <button class="nav-item" data-tab="ideas">
+            <div class="nav-icon">💡</div>
+            <span>Ideas</span>
+        </button>
+    </nav>
+
+    <!-- Floating Action Button -->
+    <button class="fab glass-fab" id="fab">+</button>
+
+    <!-- Add Friend Modal -->
+    <div class="modal hidden" id="addFriendModal">
+        <div class="modal-overlay" id="friendModalOverlay"></div>
+        <div class="modal-content mobile-modal">
+            <div class="modal-header">
+                <h3>Add Friend</h3>
+                <button class="modal-close" id="closeFriendModal">&times;</button>
+            </div>
+            <form class="modal-body" id="addFriendForm">
+                <div class="form-group">
+                    <label class="form-label" for="friendName">Friend's Name</label>
+                    <input type="text" class="form-control mobile-input" id="friendName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="friendColor">Color</label>
+                    <div class="color-picker">
+                        <input type="color" class="color-input" id="friendColor" value="#3B82F6">
+                        <div class="color-presets">
+                            <div class="color-preset" data-color="#3B82F6"></div>
+                            <div class="color-preset" data-color="#EF4444"></div>
+                            <div class="color-preset" data-color="#10B981"></div>
+                            <div class="color-preset" data-color="#8B5CF6"></div>
+                            <div class="color-preset" data-color="#F59E0B"></div>
+                            <div class="color-preset" data-color="#EC4899"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn--secondary btn--lg" id="cancelFriend">Cancel</button>
+                    <button type="submit" class="btn btn--primary btn--lg">Add Friend</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Event Modal -->
+    <div class="modal hidden" id="addEventModal">
+        <div class="modal-overlay" id="eventModalOverlay"></div>
+        <div class="modal-content mobile-modal">
+            <div class="modal-header">
+                <h3 id="eventModalTitle">Add Event</h3>
+                <button class="modal-close" id="closeEventModal">&times;</button>
+            </div>
+            <form class="modal-body" id="addEventForm">
+                <div class="form-group">
+                    <label class="form-label" for="eventTitle">Title</label>
+                    <input type="text" class="form-control mobile-input" id="eventTitle" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="eventFriend">Friend</label>
+                    <select class="form-control mobile-input" id="eventFriend" required>
+                        <option value="">Select a friend</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="eventType">Type</label>
+                    <select class="form-control mobile-input" id="eventType" required>
+                        <option value="available">Available</option>
+                        <option value="busy">Busy</option>
+                        <option value="hangout">Hanging Out</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="eventTime">Time</label>
+                    <input type="time" class="form-control mobile-input" id="eventTime">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="eventEndTime">End Time</label>
+                    <input type="time" class="form-control mobile-input" id="eventEndTime">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="eventDescription">Description</label>
+                    <textarea class="form-control mobile-input" id="eventDescription" rows="3"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn--outline btn--lg" id="deleteEvent" style="display: none;">Delete</button>
+                    <button type="button" class="btn btn--secondary btn--lg" id="cancelEvent">Cancel</button>
+                    <button type="submit" class="btn btn--primary btn--lg" id="saveEvent">Save Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Idea Modal -->
+    <div class="modal hidden" id="addIdeaModal">
+        <div class="modal-overlay" id="ideaModalOverlay"></div>
+        <div class="modal-content mobile-modal">
+            <div class="modal-header">
+                <h3>Add Idea</h3>
+                <button class="modal-close" id="closeIdeaModal">&times;</button>
+            </div>
+            <form class="modal-body" id="addIdeaForm">
+                <div class="form-group">
+                    <label class="form-label" for="ideaTitle">Title</label>
+                    <input type="text" class="form-control mobile-input" id="ideaTitle" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ideaCategory">Category</label>
+                    <select class="form-control mobile-input" id="ideaCategory" required>
+                        <option value="">Select category</option>
+                        <option value="Movies">Movies</option>
+                        <option value="Restaurants">Restaurants</option>
+                        <option value="Activities">Activities</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ideaTimeframe">Timeframe</label>
+                    <select class="form-control mobile-input" id="ideaTimeframe" required>
+                        <option value="">When?</option>
+                        <option value="this week">This week</option>
+                        <option value="next 2 weeks">Next 2 weeks</option>
+                        <option value="this month">This month</option>
+                        <option value="next month">Next month</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ideaDescription">Description</label>
+                    <textarea class="form-control mobile-input" id="ideaDescription" rows="3"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn--secondary btn--lg" id="cancelIdea">Cancel</button>
+                    <button type="submit" class="btn btn--primary btn--lg">Add Idea</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Day Events Modal -->
+    <div class="modal hidden" id="dayEventsModal">
+        <div class="modal-overlay" id="dayEventsOverlay"></div>
+        <div class="modal-content mobile-modal">
+            <div class="modal-header">
+                <h3 id="dayEventsTitle">Events for Today</h3>
+                <button class="modal-close" id="closeDayEvents">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="dayEventsList" class="day-events-list">
+                    <!-- Day events will be shown here -->
+                </div>
+                <button class="btn btn--primary btn--full-width" id="addEventForDay">Add Event for This Day</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
